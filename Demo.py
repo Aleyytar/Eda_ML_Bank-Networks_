@@ -29,7 +29,7 @@ print(df.describe()) ## Tanım
 print(df["age"].value_counts().head(15)) ## Tekrar eden yaş grupları ve tekrar sayıları
 
 sns.histplot(x="age",data=df ,color = 'rosybrown')
-plt.show()
+##plt.show()
 # Veritabanını Oku
 df = pd.read_csv("bank.csv", sep=",", encoding='utf-8')
 
@@ -38,4 +38,9 @@ numeric_df = df.select_dtypes(include=[np.number])
 
 # Korelasyon matrisini çiz
 sns.heatmap(numeric_df.corr(), annot=True)
-plt.show()
+##plt.show()
+
+#DataSeti içerisinde Empty Simple sayısı 
+IsEmptySimpleCount = df.isnull().sum()/df.shape[0]
+
+print(IsEmptySimpleCount)
