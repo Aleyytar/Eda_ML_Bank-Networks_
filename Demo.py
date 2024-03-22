@@ -20,7 +20,7 @@ from sklearn.metrics import classification_report
 import warnings
 warnings.filterwarnings('ignore')
 
-#Read the Database
+#Veri okuma
 df = pd.read_csv("bank.csv" , sep=",", encoding='utf-8')
 
 df.info()
@@ -31,9 +31,6 @@ print(df["age"].value_counts().head(15)) ## Tekrar eden yaş grupları ve tekrar
 sns.histplot(x="age",data=df ,color = 'rosybrown')
 ##plt.show()
 
-# Veritabanını Oku
-df = pd.read_csv("bank.csv", sep=",", encoding='utf-8')
-
 # Yalnızca sayısal verileri içeren sütunları seç
 numeric_df = df.select_dtypes(include=[np.number])
 
@@ -42,7 +39,7 @@ sns.heatmap(numeric_df.corr(), annot=True)
 ##plt.show()
 
 #DataSeti içerisinde Empty Simple sayısı 
-IsEmptySimpleCount = df.isnull().sum()/df.shape[0]
+df.isnull().sum()/df.shape[0]
 ## print(IsEmptySimpleCount)
 
 #Veri tabanı içerisinde kolonları tek tek gezerek içerisinde bulunan nesnel (string vb.) değerleri
@@ -87,19 +84,19 @@ print(y_test.shape)
 
 def train_evaluate_model(model, x_train, y_train, x_test,y_test):
 
-    model.fit(x_train, y_train)  #fit the model instance 
+    model.fit(x_train, y_train)  #model eğitme
 
 
-    predictions = model.predict(x_test) # calculate predictions
+    predictions = model.predict(x_test) # test üzerinden tahmin yapabilme
 
-    #compute metrics for evaluation
+    #metrikler
     accuracy = accuracy_score(y_test, predictions)
     f1 = f1_score(y_test, predictions)
     precision = precision_score(y_test, predictions)
     recall = recall_score(y_test, predictions)
     balanced_accuracy = balanced_accuracy_score(y_test, predictions)
 
-    #create a dataframe to visualize the results
+    #sonuç çıktısı colums
     eval_df = pd.DataFrame([[accuracy, f1, precision, recall, balanced_accuracy]], columns=['accuracy', 'f1_score', 'precision', 'recall', 'balanced_accuracy'])
     return eval_df
 
@@ -112,3 +109,5 @@ results.index = ['LogisticRegression']
 results.sort_values(by='f1_score',ascending=False).style.background_gradient(cmap = sns.color_palette("ch:s=-.2,r=.6", as_cmap=True))
 
 print(results)
+
+
