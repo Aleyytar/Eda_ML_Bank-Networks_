@@ -43,7 +43,7 @@ sns.heatmap(numeric_df.corr(), annot=True)
 
 #DataSeti içerisinde Empty Simple sayısı 
 IsEmptySimpleCount = df.isnull().sum()/df.shape[0]
-print(IsEmptySimpleCount)
+## print(IsEmptySimpleCount)
 
 #Veri tabanı içerisinde kolonları tek tek gezerek içerisinde bulunan nesnel (string vb.) değerleri
 #Sayısal Değerlere Dönüştürmek için 
@@ -61,12 +61,23 @@ pd.set_option('display.max_rows', 10)     # 10 satır göster
 #Datasetini sayısal verilere dönüştürülmüş halini saveledik
 df.to_csv("output.csv", index=False)
 ##print(df.columns)
-print(df)
 
+
+x = df.drop(['day'],axis =1)
+
+y = df["deposit"]
 #StandardScaler, veri özelliklerini (örneğin, sütunlardaki değerleri) ortalama değeri 
 #0 ve standart sapması 1 olacak şekilde ölçeklendirmeye yarayan bir ölçeklendirme yöntemidir. Bu işlem, veriye aynı ölçekte bakmayı 
 #sağlar ve bazı makine öğrenimi algoritmalarının daha iyi performans göstermesine yardımcı olur.
 st = StandardScaler()
 df["balance"] = st.fit_transform(df[["balance"]])
 df["duration"] = st.fit_transform(df[["duration"]])
-print(df)
+
+
+x_train , x_test ,y_train ,y_test =train_test_split(x,y ,test_size=0.25 ,random_state= 42)
+print(x.shape)
+print(x_train.shape)
+print(x_test.shape)
+print(y.shape)
+print(y_train.shape)
+print(y_test.shape)
