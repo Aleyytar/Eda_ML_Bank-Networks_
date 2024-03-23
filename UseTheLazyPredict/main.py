@@ -20,10 +20,10 @@ warnings.filterwarnings('ignore')
 df = pd.read_csv("bank.csv", sep=",", encoding='utf-8')
 
 # Veriyi inceleme
-print(df.info())
-print(df.head())
-print(df.describe())
-print(df["age"].value_counts().head(15))
+# print(df.info())
+# print(df.head())
+# print(df.describe())
+# print(df["age"].value_counts().head(15))
 
 # Sütunların türlerini dönüştürme
 le = LabelEncoder()
@@ -44,8 +44,19 @@ x = scaler.fit_transform(x)
 # Veriyi eğitim ve test setlerine ayırma
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=42)
 
-# LazyClassifier kullanarak model metriklerini gösterme
-clf = LazyClassifier(verbose=0, ignore_warnings=True, custom_metric=None)
+#LazyClassifier kullanarak model metriklerini gösterme
+
+def custom_metrics(y_true, y_pred):
+    return {
+        # "accuracy": accuracy_score(y_true, y_pred),
+        "precision": precision_score(y_true, y_pred)
+        # "recall": recall_score(y_true, y_pred),
+        # "f1": f1_score(y_true, y_pred),
+        # "balanced_accuracy": balanced_accuracy_score(y_true, y_pred)
+    }
+
+#LazyClassifier kullanarak model metriklerini gösterme
+clf = LazyClassifier(verbose=0, ignore_warnings=True, custom_metric=custom_metrics)
 models, predictions = clf.fit(x_train, x_test, y_train, y_test)
 
 print(models)
