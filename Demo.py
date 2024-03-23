@@ -3,6 +3,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
+import xlsxwriter
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -60,7 +61,7 @@ df.to_csv("output.csv", index=False)
 ##print(df.columns)
 
 
-x = df.drop(['day'],axis =1)
+x = df.drop([ 'contact', 'day', 'month','pdays','previous','deposit'],axis =1)
 
 y = df["deposit"]
 #StandardScaler, veri özelliklerini (örneğin, sütunlardaki değerleri) ortalama değeri 
@@ -82,32 +83,41 @@ print(y.shape)
 print(y_train.shape)
 print(y_test.shape)
 
-def train_evaluate_model(model, x_train, y_train, x_test,y_test):
+def train_evaluate_model(model, x_train, y_train, x_test, y_test):
+    model.fit(x_train, y_train)  # model eğitme
+    predictions = model.predict(x_test)  # test üzerinden tahmin yapabilme
 
-    model.fit(x_train, y_train)  #model eğitme
-
-
-    predictions = model.predict(x_test) # test üzerinden tahmin yapabilme
-
-    #metrikler
+    # metrikler
     accuracy = accuracy_score(y_test, predictions)
     f1 = f1_score(y_test, predictions)
     precision = precision_score(y_test, predictions)
     recall = recall_score(y_test, predictions)
     balanced_accuracy = balanced_accuracy_score(y_test, predictions)
 
-    #sonuç çıktısı colums
-    eval_df = pd.DataFrame([[accuracy, f1, precision, recall, balanced_accuracy]], columns=['accuracy', 'f1_score', 'precision', 'recall', 'balanced_accuracy'])
+    # sonuç çıktısı
+    print("Accuracy:", accuracy)
+    print("F1 Score:", f1)
+    print("Precision:", precision)
+    print("Recall:", recall)
+    print("Balanced Accuracy:", balanced_accuracy)
+
+    eval_df = pd.DataFrame([[accuracy, f1, precision, recall, balanced_accuracy]],
+                           columns=['accuracy', 'f1_score', 'precision', 'recall', 'balanced_accuracy'])
     return eval_df
 
-lg = LogisticRegression(penalty ="l2" ,C=0.5)
+# Logistic Regression modeli için sonuçları ekrana yazdırma
+lg = LogisticRegression(penalty="l2", C=0.5)
+Model1 = train_evaluate_model(lg, x_train, y_train, x_test, y_test)
+Model1.index = ['LogisticRegression']
 
-results = train_evaluate_model(lg, x_train, y_train, x_test, y_test)
+# Decision Tree modeli için sonuçları ekrana yazdırma
+decision_tree = DecisionTreeClassifier(max_depth=5, max_features=16)
+decision_tree_results = train_evaluate_model(decision_tree, x_train, y_train, x_test, y_test)
+decision_tree_results.index = ['DecisionTree']
+Model2 = decision_tree_results
 
-results.index = ['LogisticRegression']
+print("\nLogistic Regression Results:")
+print(Model1)
 
-results.sort_values(by='f1_score',ascending=False).style.background_gradient(cmap = sns.color_palette("ch:s=-.2,r=.6", as_cmap=True))
-
-print(results)
-
-
+print("\nDecision Tree Results:")
+print(Model2)
